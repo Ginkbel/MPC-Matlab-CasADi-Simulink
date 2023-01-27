@@ -1,2 +1,3 @@
-# MPC---Matlab-CasADi-Simulink
+# MPC
 Seminarski zadatak iz NDU
+Autor: Jurica Vučković
