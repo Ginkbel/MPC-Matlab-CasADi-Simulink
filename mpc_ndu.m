@@ -11,63 +11,63 @@ B = [0;0;0.1];
 C = [1 0 0];
 D = 0;
 
-% [num,den] = ss2tf(A,B,C,D);
-% 
-% sys = tf(num,den);
-% pole(sys);
-% 
-% t_val = 0:1:249;
-% 
-% sys_ss = ss(A,B,C,D);
-% y1 = step(sys_ss, t_val);
-% 
-% ts = timeseries(1*ones(250,1));
-% 
+[num,den] = ss2tf(A,B,C,D);
+
+sys = tf(num,den);
+pole(sys);
+
+t_val = 0:1:249;
+
+sys_ss = ss(A,B,C,D);
+y1 = step(sys_ss, t_val);
+
+ts = timeseries(1*ones(250,1));
+
+out = sim('ndu');
+
+figure(1)
+step(t_val,sys_ss)
+title('Odziv modela prostora stanja i Simulink modela sustava')
+xlabel('t [s]'); ylabel('\omega [rad/s]') 
+hold on
+grid on
+plot(out.w2{1}.Values, 'r')
+legend('Prostor stanja','Simulink model')
+hold off
+
+% Ekvivalentan zapis; ali drugaciji su brojevi, odzivi su isti
+[a,b,c,d] = linmod('ndu');
+
+sys_simulink = ss(a,b,c,d);
+y2 = step(sys_simulink, t_val);
+
+tocnost = sum(y1 - y2) % Provjera koliko su blizu odzivi funkcija  (5.1792e-13 rezultat -- jednaki odzivi)
+
 % out = sim('ndu');
-% 
-% figure(1)
-% step(t_val,sys_ss)
-% title('Odziv modela prostora stanja i Simulink modela sustava')
-% xlabel('t [s]'); ylabel('\omega [rad/s]') 
-% hold on
-% grid on
-% plot(out.w2{1}.Values, 'r')
-% legend('Prostor stanja','Simulink model')
-% hold off
-% 
-% % Ekvivalentan zapis; ali drugaciji su brojevi, odzivi su isti
-% [a,b,c,d] = linmod('ndu');
-% 
-% sys_simulink = ss(a,b,c,d);
-% y2 = step(sys_simulink, t_val);
-% 
-% tocnost = sum(y1 - y2) % Provjera koliko su blizu odzivi funkcija  (5.1792e-13 rezultat -- jednaki odzivi)
-% 
-% % out = sim('ndu');
-% 
-% figure(2)
-% plot(ts, '--r','LineWidth',1.5)
-% title('Odziv Simulink sustava na jediničnu pobudu')
-% xlabel('t [s]'); ylabel('\omega [rad/s]') 
-% hold on
-% grid on
-% plot(out.w2{1}.Values, 'b','LineWidth',1.5)
-% legend('m_1_,_r_e_f','\omega_2')
-% hold off
-% 
-% % Diskretizacija 
-% 
+
+figure(2)
+plot(ts, '--r','LineWidth',1.5)
+title('Odziv Simulink sustava na jediničnu pobudu')
+xlabel('t [s]'); ylabel('\omega [rad/s]') 
+hold on
+grid on
+plot(out.w2{1}.Values, 'b','LineWidth',1.5)
+legend('m_1_,_r_e_f','\omega_2')
+hold off
+
+% Diskretizacija 
+
 Td = 0.5; % vrijeme uzorkovanja
 [Ad,Bd,Cd,Dd] = c2dm(A,B,C,D,Td,'zoh');
-% 
-% sys_ssd = c2d(sys_ss,Td);
-% 
-% figure(3)
-% step(sys_ssd,10, 'b')
-% hold on
-% grid on
-% step(sys_ss,10, 'r')
-% legend('Diskretizirani model prostora stanja', 'Kontinuirani model prostora stanja')
+
+sys_ssd = c2d(sys_ss,Td);
+
+figure(3)
+step(sys_ssd,10, 'b')
+hold on
+grid on
+step(sys_ss,10, 'r')
+legend('Diskretizirani model prostora stanja', 'Kontinuirani model prostora stanja')
 
 % MPC - formulacija
 
@@ -231,8 +231,3 @@ grid on
 leg = legend('\Delta\alpha [rad]'); set(leg, 'FontSize',11);
 x_lab = xlabel('t [s]'); y_lab = ylabel('\Delta\alpha [rad]');
 set(x_lab, 'FontSize',13); set(y_lab, 'FontSize',13)
-
-% Napravi animaciju MPC kontrole
-
-% v = VideoWriter('MPC_video.avi');
-% open(v);
