@@ -1,5 +1,5 @@
 %% NDU Seminar
-% Jurica Vuckovic; JMBAG: 0035219927
+% Jurica Vuckovic
 
 clear all
 clc
